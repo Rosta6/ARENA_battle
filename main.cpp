@@ -6,7 +6,7 @@ MAIN file
 bool run = true;
 string name_of_fighter;
 int test;
-int temp_number;;
+int temp_number, temp_fight1, temp_fight2;
 
 void menu(){
     cout << "(1) Zacni souboj s nahodnym protivnikem.\n";
@@ -23,13 +23,20 @@ int main (){
     cout << "Vitejte v simulatoru Battle Areny! Nejprve si vytvorte sveho bojovnika.\n";
     cout << "Pojmenuj bojovnika: ";
     cin >> name_of_fighter;
-    bojovnici.makeNewFighterByHand(name_of_fighter);
+    bojovnici.makeNewRandomFighter(name_of_fighter);
      while(run){
          menu();
          cin >> test;
         switch (test)
         {
         case 1:
+            bojovnici.showFighters();
+            cout << "Kdo se ma utkat?\n";
+            cout << "Prvni: ";
+            cin >> temp_fight1;
+            cout << "Druhy: ";
+            cin >> temp_fight2;
+            bojovnici.souboj(temp_fight1,temp_fight2);
             break;
         case 2:
             bojovnici.stats(0);

@@ -4,51 +4,20 @@ FILE pro definici class
 
 
 #include "include.h"
-/*
-    // Functions() 
-    void printname(){ 
-       cout << "Jmeno bojovnika je: " << fighter_name; 
-    } 
-
-    void set_fighter(){
-    cout << "Zadej jmeno sveho bojovnika:";
-    cin >> fighter_name; 
-    cout << "Zadej HP sveho bojovnika:";
-    cin >> HP;
-    cout << "Zadej utok sveho bojovnika:";
-    cin >> attack;
-    cout << "Zadej armor sveho bojovnika:";
-    cin >> armor;
-    cout << "Zadej uhyb sveho bojovnika:";
-    cin >> dodge;
-    cout << "Zadej rychlost sveho bojovnika:";
-    cin >> speed;
-    cout << "Zadej sanci na kriticky zasah sveho bojovnika:";
-    cin >> critical_chance;
-    }
-
-    void stats(){
-        cout << "### STATISTIKY BOJOVNIKA ###" << endl;
-        cout << "Jmeno: " << fighter_name << endl;
-        cout << "HP: " << HP << endl;
-        cout << "Utok: " << attack << endl;
-        cout << "Armor: " << armor << endl;
-        cout << "Uhyb: " << dodge << endl;
-        cout << "Rychlost: " << speed << endl;
-        cout << "Sance na kriticky zasah: " << critical_chance << endl;
-    }
-}; 
-*/
 class fighter{
 public:
     string fighter_name; 
     double HP;
     double attack;
     double armor;
-    double dodge;
-    int speed;
-    double critical_chance;
+
 };
+
+void sleep()
+{
+   int i = 0;
+   while (i < 5e8)  { i++; }
+}
 
 class people{
 public:
@@ -61,25 +30,16 @@ public:
         cin >>bojovnik-> attack;
         cout << "Zadej armor: ";
         cin >>bojovnik-> armor;
-        cout << "Zadej dodge: ";
-        cin >>bojovnik-> dodge;
-        cout << "Zadej speed: ";
-        cin >>bojovnik-> speed;
-        cout << "Zadej sanci na kriticky zasah: ";
-        cin >>bojovnik-> critical_chance;
         fighters.push_back(bojovnik );
     }
 
     void makeNewRandomFighter(string name){
         shared_ptr<fighter> bojovnik = make_shared<fighter>();
         bojovnik->fighter_name = name;
-        bojovnik-> HP = rand()% 100 + 1;
-        bojovnik-> attack= rand()% 20 + 1;
-        bojovnik-> armor= rand();
-        bojovnik-> dodge= rand();
-        bojovnik-> speed= rand()% 100 + 1;
-        bojovnik-> critical_chance= rand();
-        fighters.push_back(bojovnik );
+        bojovnik-> HP = 2000 + rand()% 2000 + 1;         //pocet 2000 - 4000
+        bojovnik-> attack= 300 + rand()% 100 + 1;        //pocet 200 - 300               
+        bojovnik-> armor= 100 + rand()%200 + 1;          //pocet 100 - 300
+        fighters.push_back(bojovnik);                  
     }
 
     void showFighters(){
@@ -97,11 +57,41 @@ public:
         cout << "HP: " << bojovnik->HP << endl;
         cout << "Utok: " << bojovnik->attack << endl;
         cout << "Armor: " << bojovnik->armor << endl;
-        cout << "Uhyb: " << bojovnik->dodge << endl;
-        cout << "Rychlost: " << bojovnik->speed << endl;
-        cout << "Sance na kriticky zasah: " << bojovnik->critical_chance << endl;
     }
-
+    void souboj(int temp1, int temp2){
+        int hp1, hp2,pocet_kol = 0;
+        shared_ptr<fighter> bojovnik1 = fighters[temp1];
+        shared_ptr<fighter> bojovnik2 = fighters[temp2];
+        hp1 = bojovnik1->HP;
+        hp2 = bojovnik2->HP;
+        bool temp = true;
+        while(temp){
+        hp1 = zraneni(hp1, temp1, temp2);
+        pocet_kol++;
+        hp2 = zraneni(hp2, temp2, temp1);
+        pocet_kol++;
+        if (hp1 <= 0){
+            temp = false;
+            cout << "Souboj vyhral bojovnik " << bojovnik2->fighter_name << " po " << pocet_kol << "kolech!"<< endl;
+        }else if(hp2 <= 0){
+            temp = false;
+            cout << "Souboj vyhral bojovnik " << bojovnik1->fighter_name << " po " << pocet_kol << "kolech!"<< endl;
+        }
+    }}
+    int zraneni(int hp, int temp1, int temp2){
+        shared_ptr<fighter> bojovnik1 = fighters[temp1];
+        shared_ptr<fighter> bojovnik2 = fighters[temp2];
+        double zraneni;
+        zraneni = (bojovnik1->attack - bojovnik2->armor);
+        hp = hp - zraneni;
+        cout << "Bojovnik " << bojovnik1->fighter_name << " utoci na bojovnika " << bojovnik2->fighter_name << endl;
+        sleep();
+        cout << "Bojovnik " << bojovnik1->fighter_name << " zranuje bojovnika " << bojovnik2->fighter_name << " za " << zraneni << " zivotu." << endl;
+        sleep();
+        cout << "Bojovnik " << bojovnik2->fighter_name << " ma nyni " << hp << " zivotu." << endl;
+        sleep();
+        return hp;
+    }
 private:
     vector<shared_ptr<fighter>> fighters;
 };
