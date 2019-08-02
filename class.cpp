@@ -10,6 +10,7 @@ public:
     double HP;
     double attack;
     double armor;
+    double critical;
 
 };
 
@@ -39,6 +40,7 @@ public:
         bojovnik-> HP = 2000 + rand()% 2000 + 1;         //pocet 2000 - 4000
         bojovnik-> attack= 300 + rand()% 100 + 1;        //pocet 200 - 300               
         bojovnik-> armor= 100 + rand()%200 + 1;          //pocet 100 - 300
+        bojovnik-> critical = rand()%100 + 1;
         fighters.push_back(bojovnik);                  
     }
 
@@ -66,23 +68,32 @@ public:
         hp2 = bojovnik2->HP;
         bool temp = true;
         while(temp){
-        hp1 = zraneni(hp1, temp1, temp2);
+        hp2 = zraneni(hp2, temp1, temp2);
         pocet_kol++;
-        hp2 = zraneni(hp2, temp2, temp1);
+        if (hp2 <= 0){
+            temp = false;
+            cout << "Souboj vyhral bojovnik " << bojovnik2->fighter_name << " po " << pocet_kol << " kolech!"<< endl;
+            break;
+        }
+        hp1 = zraneni(hp1, temp2, temp1);
         pocet_kol++;
-        if (hp1 <= 0){
+        if(hp1 <= 0){
             temp = false;
-            cout << "Souboj vyhral bojovnik " << bojovnik2->fighter_name << " po " << pocet_kol << "kolech!"<< endl;
-        }else if(hp2 <= 0){
-            temp = false;
-            cout << "Souboj vyhral bojovnik " << bojovnik1->fighter_name << " po " << pocet_kol << "kolech!"<< endl;
+            cout << "Souboj vyhral bojovnik " << bojovnik1->fighter_name << " po " << pocet_kol << " kolech!"<< endl;
+            break;
         }
     }}
     int zraneni(int hp, int temp1, int temp2){
         shared_ptr<fighter> bojovnik1 = fighters[temp1];
         shared_ptr<fighter> bojovnik2 = fighters[temp2];
-        double zraneni;
-        zraneni = (bojovnik1->attack - bojovnik2->armor);
+        double zraneni,critical;
+        critical = rand()%100 +1;
+        if (critical > bojovnik1->critical) 
+        zraneni = (bojovnik1->attack*(1+critical/100) - bojovnik2->armor);
+        else
+        {
+           zraneni = (bojovnik1->attack - bojovnik2->armor);
+        }
         hp = hp - zraneni;
         cout << "Bojovnik " << bojovnik1->fighter_name << " utoci na bojovnika " << bojovnik2->fighter_name << endl;
         sleep();
